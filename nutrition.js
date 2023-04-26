@@ -103,17 +103,17 @@ function console_output(jsonData){
 	const show_total = (argv.total || argv.totalonly);
 	let output = '++++++++++++ Results ++++++++++++\n';
 	for (const result of jsonData['foods']){
-		const pct_cals_protein = (result['nf_protein'] * 4/result['nf_calories']).toLocaleString(undefined, {
+		const pct_cals_protein = (result['nf_protein'] * 4/result['nf_calories']).toLocaleString('en-US', {
 			  style: 'percent',
 			  minimumFractionDigits: 2,
 			  maximumFractionDigits: 2,
 		});
-		const pct_cals_carbs = (result['nf_total_carbohydrate'] * 4/result['nf_calories']).toLocaleString(undefined, {
+		const pct_cals_carbs = (result['nf_total_carbohydrate'] * 4/result['nf_calories']).toLocaleString('en-US', {
 			  style: 'percent',
 			  minimumFractionDigits: 2,
 			  maximumFractionDigits: 2,
 		});
-		const pct_cals_fat = (result['nf_total_fat'] * 9/result['nf_calories']).toLocaleString(undefined, {
+		const pct_cals_fat = (result['nf_total_fat'] * 9/result['nf_calories']).toLocaleString('en-US', {
 			  style: 'percent',
 			  minimumFractionDigits: 2,
 			  maximumFractionDigits: 2,
@@ -139,17 +139,17 @@ Protein cals: ${result['nf_protein'] * 4} (${pct_cals_protein})
 	}
 
 	if (show_total){
-		const total_pct_cals_protein = (totals['prot'] * 4/totals['cals']).toLocaleString(undefined, {
+		const total_pct_cals_protein = (totals['prot'] * 4/totals['cals']).toLocaleString('en-US', {
 			  style: 'percent',
 			  minimumFractionDigits: 2,
 			  maximumFractionDigits: 2,
 		});
-		const total_pct_cals_fat = (totals['fat'] * 9/totals['cals']).toLocaleString(undefined, {
+		const total_pct_cals_fat = (totals['fat'] * 9/totals['cals']).toLocaleString('en-US', {
 			  style: 'percent',
 			  minimumFractionDigits: 2,
 			  maximumFractionDigits: 2,
 		});
-		const total_pct_cals_carb = (totals['carb'] * 4/totals['cals']).toLocaleString(undefined, {
+		const total_pct_cals_carb = (totals['carb'] * 4/totals['cals']).toLocaleString('en-US', {
 			  style: 'percent',
 			  minimumFractionDigits: 2,
 			  maximumFractionDigits: 2,
@@ -196,7 +196,7 @@ function csv_output(jsonData){
 			protein: result['nf_protein'],
 			fat: result['nf_total_fat'],
 			sat_fat: result['nf_saturated_fat'],
-			pct_cals_protein: (result['nf_protein'] * 4/result['nf_calories']).toLocaleString(undefined, {
+			pct_cals_protein: (result['nf_protein'] * 4/result['nf_calories']).toLocaleString('en-US', {
 			  style: 'percent',
 			  minimumFractionDigits: 2,
 			  maximumFractionDigits: 2,
