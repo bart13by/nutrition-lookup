@@ -63,7 +63,7 @@ function getNutrients(food){
 		'x-app-key': process.env.APP_KEY,
 	  'Content-Type': 'application/json'
 	};
-	console.log(headers);
+	
 	const body = JSON.stringify({
 	  query: food
 	});
