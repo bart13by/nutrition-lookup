@@ -95,30 +95,48 @@ function getNutrients(food){
 function console_output(jsonData){
 	let totals = {
 		cals: 0,
+		macro_cals: 0,
+		fat_cals: 0,
+		carb_cals: 0,
+		protein_cals: 0,
 		fat: 0,
 		sat: 0,
 		prot: 0,
 		carb: 0
 	};
 	const show_total = (argv.total || argv.totalonly);
-	let output = '++++++++++++ Results ++++++++++++\n';
+	let output = '';
 	for (const result of jsonData['foods']){
-		const pct_cals_protein = (result['nf_protein'] * 4/result['nf_calories']).toLocaleString('en-US', {
-			  style: 'percent',
-			  minimumFractionDigits: 2,
-			  maximumFractionDigits: 2,
+		
+		const protein_cals = (result['nf_protein'] * 4).toLocaleString('en-US', {maximumFractionDigits: 2});
+		const fat_cals = (result['nf_total_fat'] * 9).toLocaleString('en-US', {maximumFractionDigits: 2});
+		const carb_cals = (result['nf_total_carbohydrate'] * 4).toLocaleString('en-US', {maximumFractionDigits: 2});
+		//Need to convert these back to floats in order to do math with them:
+		const macro_cals = [protein_cals, fat_cals, carb_cals].reduce((total, num) => total + parseFloat(num), 0);
+
+		const pct_cals_protein = (protein_cals/macro_cals)
+				.toLocaleString('en-US', {
+				  style: 'percent',
+				  minimumFractionDigits: 2,
+				  maximumFractionDigits: 2,
+				});
+		const pct_cals_carbs = (carb_cals/macro_cals)
+				.toLocaleString('en-US', {
+				  style: 'percent',
+				  minimumFractionDigits: 2,
+				  maximumFractionDigits: 2,
 		});
-		const pct_cals_carbs = (result['nf_total_carbohydrate'] * 4/result['nf_calories']).toLocaleString('en-US', {
-			  style: 'percent',
-			  minimumFractionDigits: 2,
-			  maximumFractionDigits: 2,
-		});
-		const pct_cals_fat = (result['nf_total_fat'] * 9/result['nf_calories']).toLocaleString('en-US', {
-			  style: 'percent',
-			  minimumFractionDigits: 2,
-			  maximumFractionDigits: 2,
+		const pct_cals_fat = (fat_cals/macro_cals)
+				.toLocaleString('en-US', {
+				  style: 'percent',
+				  minimumFractionDigits: 2,
+				  maximumFractionDigits: 2,
 		});
 		if (show_total){
+			totals['macro_cals'] += macro_cals;
+			totals['fat_cals'] += parseFloat(fat_cals);
+			totals['carb_cals'] += parseFloat(carb_cals);
+			totals['protein_cals'] += parseFloat(protein_cals);
 			totals['cals'] += result['nf_calories'];
 			totals['fat'] += result['nf_total_fat'];
 			totals['sat'] += result['nf_saturated_fat'];
@@ -129,9 +147,9 @@ function console_output(jsonData){
 ========  Item: ${result['food_name']}  ========
 Serving: ${result['serving_weight_grams']} grams
 Calories: ${result['nf_calories']} 
-Fat cals: ${result['nf_total_fat'] * 9} (${pct_cals_fat})
-Carb cals: ${result['nf_total_carbohydrate'] * 4} (${pct_cals_carbs})
-Protein cals: ${result['nf_protein'] * 4} (${pct_cals_protein})
+Fat cals: ${fat_cals} (${pct_cals_fat})
+Carb cals: ${carb_cals} (${pct_cals_carbs})
+Protein cals: ${protein_cals} (${pct_cals_protein})
   Total fat: ${result['nf_total_fat']}g
   Saturated fat: ${result['nf_saturated_fat']}g
   Total Carbs: ${result['nf_total_carbohydrate']}g
@@ -139,26 +157,26 @@ Protein cals: ${result['nf_protein'] * 4} (${pct_cals_protein})
 	}
 
 	if (show_total){
-		const total_pct_cals_protein = (totals['prot'] * 4/totals['cals']).toLocaleString('en-US', {
+		const total_pct_cals_protein = (totals['protein_cals']/totals['macro_cals']).toLocaleString('en-US', {
 			  style: 'percent',
 			  minimumFractionDigits: 2,
 			  maximumFractionDigits: 2,
 		});
-		const total_pct_cals_fat = (totals['fat'] * 9/totals['cals']).toLocaleString('en-US', {
+		const total_pct_cals_fat = (totals['fat_cals']/totals['macro_cals']).toLocaleString('en-US', {
 			  style: 'percent',
 			  minimumFractionDigits: 2,
 			  maximumFractionDigits: 2,
 		});
-		const total_pct_cals_carb = (totals['carb'] * 4/totals['cals']).toLocaleString('en-US', {
+		const total_pct_cals_carb = (totals['carb_cals']/totals['macro_cals']).toLocaleString('en-US', {
 			  style: 'percent',
 			  minimumFractionDigits: 2,
 			  maximumFractionDigits: 2,
 		});
 		tot_out = `============ TOTALS ============
 Calories: ${totals['cals'].toLocaleString('en-US', {maximumFractionDigits: 2 })}
-Fat cals: ${totals['fat'] * 9} (${total_pct_cals_fat}) 
-Carb cals: ${totals['carb'] * 4} (${total_pct_cals_carb})
-Protein cals: ${totals['prot'] * 4} (${total_pct_cals_protein})
+Fat cals: ${totals['fat_cals']} (${total_pct_cals_fat}) 
+Carb cals: ${totals['carb_cals']} (${total_pct_cals_carb})
+Protein cals: ${totals['protein_cals']} (${total_pct_cals_protein})
   Total fat: ${totals['fat'].toLocaleString('en-US', {maximumFractionDigits: 2 })}g
   Saturated fat: ${totals['sat'].toLocaleString('en-US', {maximumFractionDigits: 2 })}g
   Protein: ${totals['prot'].toLocaleString('en-US', {maximumFractionDigits: 2 })}g\n`
