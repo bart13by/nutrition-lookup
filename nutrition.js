@@ -157,6 +157,7 @@ Protein cals: ${protein_cals} (${pct_cals_protein})
 	}
 
 	if (show_total){
+
 		const total_pct_cals_protein = (totals['protein_cals']/totals['macro_cals']).toLocaleString('en-US', {
 			  style: 'percent',
 			  minimumFractionDigits: 2,
@@ -172,14 +173,17 @@ Protein cals: ${protein_cals} (${pct_cals_protein})
 			  minimumFractionDigits: 2,
 			  maximumFractionDigits: 2,
 		});
+		const formattedTotals = Object.fromEntries(
+      Object.entries(totals).map(([key, value]) => [key, value.toLocaleString('en-US', { maximumFractionDigits: 2 })])
+		);
 		tot_out = `============ TOTALS ============
-Calories: ${totals['cals'].toLocaleString('en-US', {maximumFractionDigits: 2 })}
-Fat cals: ${totals['fat_cals']} (${total_pct_cals_fat}) 
-Carb cals: ${totals['carb_cals']} (${total_pct_cals_carb})
-Protein cals: ${totals['protein_cals']} (${total_pct_cals_protein})
-  Total fat: ${totals['fat'].toLocaleString('en-US', {maximumFractionDigits: 2 })}g
-  Saturated fat: ${totals['sat'].toLocaleString('en-US', {maximumFractionDigits: 2 })}g
-  Protein: ${totals['prot'].toLocaleString('en-US', {maximumFractionDigits: 2 })}g\n`
+Calories: ${formattedTotals['cals'].toLocaleString('en-US', {maximumFractionDigits: 2 })}
+Fat cals: ${formattedTotals['fat_cals']} (${total_pct_cals_fat}) 
+Carb cals: ${formattedTotals['carb_cals']} (${total_pct_cals_carb})
+Protein cals: ${formattedTotals['protein_cals']} (${total_pct_cals_protein})
+  Total fat: ${formattedTotals['fat']}g
+  Saturated fat: ${formattedTotals['sat']}g
+  Protein: ${formattedTotals['prot']}g\n`
 	}
 	if (!argv.totalonly){
 		console.log(output);
