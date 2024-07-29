@@ -19,6 +19,7 @@ const argv = yargs
     demandOption: true,
     array: true
   })
+  
   .option('csv', {
     alias: 'c',
     description: 'Produce CSV output.',
@@ -102,7 +103,9 @@ function console_output(jsonData){
 		fat: 0,
 		sat: 0,
 		prot: 0,
-		carb: 0
+		fiber: 0,
+		carb: 0,
+		net_carb: 0
 	};
 	const show_total = (argv.total || argv.totalonly);
 	let output = '';
@@ -141,7 +144,9 @@ function console_output(jsonData){
 			totals['fat'] += result['nf_total_fat'];
 			totals['sat'] += result['nf_saturated_fat'];
 			totals['prot'] += result['nf_protein'];
-			totals['carb'] += result['nf_total_carbohydrate']
+			totals['fiber'] += result['nf_dietary_fiber'];
+			totals['carb'] += result['nf_total_carbohydrate'];
+			totals['net_carb'] += result['nf_total_carbohydrate'] - result['nf_dietary_fiber'];
 		}
 		output +=  `
 ========  Item: ${result['food_name']}  ========
@@ -150,10 +155,13 @@ Calories: ${result['nf_calories']}
 Fat cals: ${fat_cals} (${pct_cals_fat})
 Carb cals: ${carb_cals} (${pct_cals_carbs})
 Protein cals: ${protein_cals} (${pct_cals_protein})
-  Total fat: ${result['nf_total_fat']}g
-  Saturated fat: ${result['nf_saturated_fat']}g
-  Total Carbs: ${result['nf_total_carbohydrate']}g
-  Protein: ${result['nf_protein']}g\n`;
+Total fat: ${result['nf_total_fat']}g
+Saturated fat: ${result['nf_saturated_fat']}g
+Total Carbs: ${result['nf_total_carbohydrate']}g
+Protein: ${result['nf_protein']}g
+Fiber: ${result['nf_dietary_fiber']}g
+Net Carbs: ${result['nf_total_carbohydrate'] - result['nf_dietary_fiber']}g\n`;
+
 	}
 
 	if (show_total){
@@ -181,9 +189,12 @@ Calories: ${formattedTotals['cals'].toLocaleString('en-US', {maximumFractionDigi
 Fat cals: ${formattedTotals['fat_cals']} (${total_pct_cals_fat}) 
 Carb cals: ${formattedTotals['carb_cals']} (${total_pct_cals_carb})
 Protein cals: ${formattedTotals['protein_cals']} (${total_pct_cals_protein})
-  Total fat: ${formattedTotals['fat']}g
-  Saturated fat: ${formattedTotals['sat']}g
-  Protein: ${formattedTotals['prot']}g\n`
+Total fat: ${formattedTotals['fat']}g
+Saturated fat: ${formattedTotals['sat']}g
+Protein: ${formattedTotals['prot']}g
+Fiber: ${formattedTotals['fiber']}g
+Carbs: ${formattedTotals['carb']}g
+Net carbs: ${formattedTotals['net_carb']}g\n`
 	}
 	if (!argv.totalonly){
 		console.log(output);
